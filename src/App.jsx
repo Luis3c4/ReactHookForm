@@ -6,11 +6,26 @@ function App() {
     handleSubmit,
     formState: { errors },
     watch,
-  } = useForm();
+    setValue,
+    reset,
+  } = useForm({
+    defaultValues: {
+      nombre: "",
+      correo: "",
+      password: "",
+      confirmarPassword: "",
+      fecha: "",
+      pais: "",
+      provincia: "",
+      terminos: false,
+    },
+  });
 
   console.log(errors);
   const onSubmit = handleSubmit((data) => {
     console.log(data);
+    alert("formulario enviado")
+    reset();
   });
   return (
     <form action="" onSubmit={onSubmit}>
@@ -120,10 +135,21 @@ function App() {
           {errors.provincia && <span>{errors.provincia.message}</span>}
         </>
       )}
+
       <label htmlFor="file">foto de perfil</label>
-      <input type="file" id="file" {...register("file")} />
+      <input type="file" id="file" onChange={(e) => setValue("file", e.target.files[0].name)} />
+
       <label htmlFor="terminos">Aceptar términos y condiciones</label>
-      <input type="checkbox" id="terminos" {...register("terminos")} />
+      <input type="checkbox" id="terminos" {...register("terminos",{
+        required:{
+          value: true,
+          message: "Debes aceptar los términos y condiciones",
+        }
+      })} 
+      />
+      {
+        errors.terminos && <span>{errors.terminos.message}</span>
+      }
       <button type="submit">enviar</button>
       <pre>{JSON.stringify(watch(), null, 2)}</pre>
     </form>
